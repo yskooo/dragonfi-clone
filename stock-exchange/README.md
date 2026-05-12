@@ -10,18 +10,31 @@ Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The appli
 
 Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
 
-## Build
+# StockExchange Localhost Guide
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+This repo has two apps:
 
-## Running unit tests
+- `stock-exchange` is the Angular frontend.
+- `stock-exchange-api/StockExchange` is the C# backend API.
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+## Run the API
 
-## Running end-to-end tests
+1. Open a terminal in `stock-exchange-api/StockExchange`.
+2. Run `dotnet restore` if needed.
+3. Start the server with `dotnet run`.
+4. The API listens on `http://localhost:5001` by default because `Program.cs` binds to `API_PORT` or falls back to `5001`.
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+## Run the Angular app
 
-## Further help
+1. Open a second terminal in `stock-exchange`.
+2. Run `pnpm install` if needed.
+3. Start the frontend with `pnpm start`.
+4. Open `http://localhost:4200` in your browser.
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+The Angular dev server already proxies `/api` requests to `http://localhost:5001`, so the frontend and API can run independently on localhost.
+
+## What changed in the app
+
+- Added a `My Transactions` tab in the top navigation.
+- Added a `My Transactions` page for Deposit and Withdrawal activity.
+- The dashboard Deposit and Withdraw buttons now open the transactions page.

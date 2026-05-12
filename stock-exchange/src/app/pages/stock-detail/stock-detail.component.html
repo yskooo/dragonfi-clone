@@ -29,22 +29,9 @@
               <button class="period-btn" [class.active]="selectedPeriod === p" (click)="setPeriod(p)">{{ p }}</button>
             }
           </div>
-          <div class="chart-area">
-            @if (candles.length) {
-              <svg viewBox="0 0 800 220" preserveAspectRatio="none" class="chart-svg">
-                <defs>
-                  <linearGradient id="chartGrad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" [attr.stop-color]="isPositive ? '#10b981' : '#ef4444'" stop-opacity="0.2"/>
-                    <stop offset="100%" [attr.stop-color]="isPositive ? '#10b981' : '#ef4444'" stop-opacity="0"/>
-                  </linearGradient>
-                </defs>
-                <path [attr.d]="chartFill" fill="url(#chartGrad)"/>
-                <path [attr.d]="chartPath" fill="none"
-                  [attr.stroke]="isPositive ? '#10b981' : '#ef4444'"
-                  stroke-width="1.5" stroke-linejoin="round"/>
-              </svg>
-            } @else {
-              <div class="loading">No chart data</div>
+          <div class="chart-area" #chartContainer style="width: 100%; height: 350px; position: relative;">
+            @if (!candles.length) {
+              <div class="loading">Loading chart data...</div>
             }
           </div>
         </div>

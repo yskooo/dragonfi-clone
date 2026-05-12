@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, interval, switchMap, startWith, shareReplay, Subject } from 'rxjs';
-import { Portfolio, Order, TradeRequest } from '../models/portfolio.model';
+import { MoneyRequest, Portfolio, Order, TradeRequest, Transaction } from '../models/portfolio.model';
 import { environment } from '../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
@@ -29,6 +29,20 @@ export class PortfolioService {
 
   getOrders(): Observable<Order[]> {
     return this.http.get<Order[]>(`${this.apiUrl}/orders`);
+  }
+
+  getTransactions(): Observable<Transaction[]> {
+    return this.http.get<Transaction[]>(`${this.apiUrl}/transactions`);
+  }
+
+  deposit(amount: number): Observable<Transaction> {
+    const request: MoneyRequest = { amount };
+    return this.http.post<Transaction>(`${this.apiUrl}/deposit`, request);
+  }
+
+  withdraw(amount: number): Observable<Transaction> {
+    const request: MoneyRequest = { amount };
+    return this.http.post<Transaction>(`${this.apiUrl}/withdraw`, request);
   }
 
   notifyTradeExecuted() {

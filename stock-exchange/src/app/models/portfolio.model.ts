@@ -31,8 +31,22 @@ export interface Order {
   status: string;
 }
 
+export interface Transaction {
+  id: string;
+  type: 'DEPOSIT' | 'WITHDRAWAL';
+  amount: number;
+  balanceAfter: number;
+  note: string;
+  createdAt: string;
+  status: string;
+}
+
 export interface TradeRequest {
   symbol: string;
   type: 'BUY' | 'SELL';
   quantity: number;
+}
+
+export interface MoneyRequest {
+  amount: number;
 }

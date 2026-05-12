@@ -36,9 +36,25 @@ public class Order
     public string Status { get; set; } = "FILLED";
 }
 
+public class TransactionEntry
+{
+    public Guid Id { get; set; } = Guid.NewGuid();
+    public string Type { get; set; } = string.Empty; // DEPOSIT or WITHDRAWAL
+    public decimal Amount { get; set; }
+    public decimal BalanceAfter { get; set; }
+    public string Note { get; set; } = string.Empty;
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    public string Status { get; set; } = "COMPLETED";
+}
+
 public class TradeRequest
 {
     public string Symbol { get; set; } = string.Empty;
     public string Type { get; set; } = string.Empty;
     public int Quantity { get; set; }
+}
+
+public class MoneyRequest
+{
+    public decimal Amount { get; set; }
 }

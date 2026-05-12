@@ -2,20 +2,26 @@
   <div class="nav-inner">
 
     <div class="nav-brand">
-      <div class="brand-icon">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M3 17L9 11L13 15L21 7" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-          <path d="M17 7H21V11" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </div>
-      <span class="brand-name">StockEx</span>
+      <img src="https://dragonfi-dev-public-assets.s3.ap-southeast-1.amazonaws.com/logo/dragonfi-logo-white.png" alt="DragonFi" height="24">
     </div>
 
     <ul class="nav-links">
       <li><a routerLink="/dashboard" routerLinkActive="active">Dashboard</a></li>
-      <li><a routerLink="/market" routerLinkActive="active">Market</a></li>
-      <li><a routerLink="/portfolio" routerLinkActive="active">Portfolio</a></li>
-      <li><a routerLink="/orders" routerLinkActive="active">Orders</a></li>
+      <li><a routerLink="/orders" routerLinkActive="active">Trade</a></li>
+      <li><a routerLink="/transactions" routerLinkActive="active">Transactions</a></li>
+      <li><a routerLink="/portfolio" routerLinkActive="active">My Money ▾</a></li>
+      <li><a routerLink="/market" routerLinkActive="active">Market ▾</a></li>
+      <li><a routerLink="/research" routerLinkActive="active">Research</a></li>
+      <li class="nav-logo-link">
+        <a href="#">
+          <img src="https://dragonfi-dev-public-assets.s3.ap-southeast-1.amazonaws.com/Investing+Club/logo-white.svg" alt="Investing Club" height="20">
+        </a>
+      </li>
+      <li class="nav-logo-link">
+        <a href="#">
+          <img src="https://dragonfi-dev-public-assets.s3.ap-southeast-1.amazonaws.com/Static/Media/ic-logo-white.svg" alt="Investor's Corner" height="20">
+        </a>
+      </li>
     </ul>
 
     <div class="nav-right">
@@ -45,6 +51,7 @@
       <a routerLink="/dashboard" routerLinkActive="active" (click)="mobileMenuOpen = false">Dashboard</a>
       <a routerLink="/market" routerLinkActive="active" (click)="mobileMenuOpen = false">Market</a>
       <a routerLink="/portfolio" routerLinkActive="active" (click)="mobileMenuOpen = false">Portfolio</a>
+      <a routerLink="/transactions" routerLinkActive="active" (click)="mobileMenuOpen = false">My Transactions</a>
       <a routerLink="/orders" routerLinkActive="active" (click)="mobileMenuOpen = false">Orders</a>
     </div>
   }

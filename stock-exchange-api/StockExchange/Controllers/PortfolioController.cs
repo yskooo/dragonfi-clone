@@ -34,4 +34,26 @@ public class PortfolioController : ControllerBase
     {
         return Ok(_portfolioService.GetOrders());
     }
+
+    [HttpGet("transactions")]
+    public ActionResult<IEnumerable<TransactionEntry>> GetTransactions()
+    {
+        return Ok(_portfolioService.GetTransactions());
+    }
+
+    [HttpPost("deposit")]
+    public ActionResult<TransactionEntry> Deposit([FromBody] MoneyRequest request)
+    {
+        var (success, message, transaction) = _portfolioService.Deposit(request.Amount);
+        if (!success) return BadRequest(new { message });
+        return Ok(transaction);
+    }
+
+    [HttpPost("withdraw")]
+    public ActionResult<TransactionEntry> Withdraw([FromBody] MoneyRequest request)
+    {
+        var (success, message, transaction) = _portfolioService.Withdraw(request.Amount);
+        if (!success) return BadRequest(new { message });
+        return Ok(transaction);
+    }
 }

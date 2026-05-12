@@ -1,0 +1,120 @@
+<div class="dash-wrapper">
+  <div class="breadcrumb">
+    <a routerLink="/dashboard">Dashboard</a> &gt; <span>Transactions</span>
+  </div>
+
+  <div class="tabs-bar">
+    <button class="tab-btn" [class.active]="activeTab === 'transactions'" (click)="setTab('transactions')">Transactions</button>
+    <button class="tab-btn" [class.active]="activeTab === 'requests'" (click)="setTab('requests')">Requests</button>
+    <button class="tab-btn" [class.active]="activeTab === 'dividend'" (click)="setTab('dividend')">Dividend History</button>
+    <button class="tab-btn" [class.active]="activeTab === 'funds'" (click)="setTab('funds')">Funds</button>
+  </div>
+
+  @if (message) {
+    <div class="card message-bar">{{ message }}</div>
+  }
+
+  @if (activeTab === 'transactions') {
+    <div class="card">
+      <div class="section-header">
+        <h2>Transactions</h2>
+        <div class="filters">
+          <button class="filter-pill" [class.active]="timeFilter === '7d'" (click)="timeFilter = '7d'">Last 7 days</button>
+          <button class="filter-pill" [class.active]="timeFilter === '14d'" (click)="timeFilter = '14d'">Last 14 days</button>
+          <button class="filter-pill" [class.active]="timeFilter === '30d'" (click)="timeFilter = '30d'">Last 30 days</button>
+          <input type="month" class="filter-select" placeholder="Select a Month">
+          <button class="icon-btn" (click)="loadTransactions()">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M4 4v5h.582A9.99 9.99 0 0 1 22 12h-2a8 8 0 1 0-2.348 5.652l-1.414-1.414A5.992 5.992 0 0 1 6 12a6 6 0 0 1 1.757-4.243L9 9V4H4Z" fill="currentColor"/></svg>
+          </button>
+          <button class="btn btn-export">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M12 4v12m0 0l-4-4m4 4l4-4M4 20h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            Export
+          </button>
+        </div>
+      </div>
+
+      @if (loading) {
+        <div style="padding: 32px; text-align: center; color: var(--text-secondary);">Loading transactions...</div>
+      } @else if (filteredTransactions.length === 0) {
+        <div class="empty-state">
+          <div class="empty-icon">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
+              <circle cx="11" cy="11" r="7" stroke="#10b981" stroke-width="2"/>
+              <path d="M20 20l-4-4" stroke="#10b981" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <h3>No results found</h3>
+          <p>You have not made any transactions in the last {{ timeFilter === 'month' ? 'month' : timeFilter.replace('d', ' days') }}.</p>
+        </div>
+      } @else {
+        <div style="overflow-x: auto;">
+          <table>
+            <thead>
+              <tr>
+                <th style="cursor:pointer;">Date ↑↓</th>
+                <th>Type</th>
+                <th>Stock</th>
+                <th>Description</th>
+                <th>Qty</th>
+                <th>Price</th>
+                <th>Comm & Other Fees</th>
+                <th class="text-right">Amount</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (tx of filteredTransactions; track tx.id) {
+                <tr>
+                  <td style="white-space: nowrap;">{{ tx.createdAt | date:'MMM d, y HH:mm' }}</td>
+                  <td>{{ tx.type }}</td>
+                  <td>-</td>
+                  <td>{{ tx.note }}</td>
+                  <td>-</td>
+                  <td>-</td>
+                  <td>-</td>
+                  <td class="text-right" [style.color]="tx.type === 'DEPOSIT' ? 'var(--green)' : 'var(--red)'">
+                    {{ tx.type === 'DEPOSIT' ? '+' : '-' }}{{ tx.amount | currency:'USD':'symbol':'1.2-2' }}
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    </div>
+  }
+
+  @if (activeTab === 'funds') {
+    <div class="panel-grid">
+      <div class="card panel">
+        <h2>Deposit Cash</h2>
+        <p>Add funds to your available balance</p>
+        <div class="field-wrap">
+          <span>Amount</span>
+          <input type="number" min="1" step="100" [(ngModel)]="depositAmount" />
+        </div>
+        <button class="bg-green-500" type="button" (click)="submitDeposit()" [disabled]="depositBusy">
+          {{ depositBusy ? 'Processing...' : 'Deposit' }}
+        </button>
+      </div>
+
+      <div class="card panel">
+        <h2>Withdraw Cash</h2>
+        <p>Move funds out of your balance</p>
+        <div class="field-wrap">
+          <span>Amount</span>
+          <input type="number" min="1" step="100" [(ngModel)]="withdrawAmount" />
+        </div>
+        <button class="bg-gray-800" type="button" (click)="submitWithdraw()" [disabled]="withdrawBusy">
+          {{ withdrawBusy ? 'Processing...' : 'Withdraw' }}
+        </button>
+      </div>
+    </div>
+  }
+
+  @if (activeTab === 'requests' || activeTab === 'dividend') {
+    <div class="card empty-state">
+      <h3>Coming Soon</h3>
+      <p>This feature is not available yet.</p>
+    </div>
+  }
+</div>
