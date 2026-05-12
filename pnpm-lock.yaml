@@ -150,6 +150,18 @@ importers:
 
   artifacts/api-server:
     dependencies:
+      '@types/cookie-parser':
+        specifier: ^1.4.10
+        version: 1.4.10(@types/express@5.0.6)
+      '@types/cors':
+        specifier: ^2.8.19
+        version: 2.8.19
+      '@types/express':
+        specifier: ^5.0.6
+        version: 5.0.6
+      '@types/node':
+        specifier: 'catalog:'
+        version: 25.3.5
       '@workspace/api-zod':
         specifier: workspace:*
         version: link:../../lib/api-zod
@@ -175,18 +187,6 @@ importers:
         specifier: ^10.5.0
         version: 10.5.0
     devDependencies:
-      '@types/cookie-parser':
-        specifier: ^1.4.10
-        version: 1.4.10(@types/express@5.0.6)
-      '@types/cors':
-        specifier: ^2.8.19
-        version: 2.8.19
-      '@types/express':
-        specifier: ^5.0.6
-        version: 5.0.6
-      '@types/node':
-        specifier: 'catalog:'
-        version: 25.3.5
       esbuild:
         specifier: 0.27.3
         version: 0.27.3
