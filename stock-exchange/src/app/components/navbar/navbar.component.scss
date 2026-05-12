@@ -1,55 +1,98 @@
 .navbar {
-  position: fixed; top: 0; left: 0; right: 0; height: 60px;
-  background: var(--bg-secondary);
-  border-bottom: 1px solid var(--border);
+  position: fixed; top: 0; left: 0; right: 0;
+  background: #ffffff;
+  border-bottom: 1px solid #e5e7eb;
   z-index: 100;
-  backdrop-filter: blur(12px);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
 }
 
 .nav-inner {
   max-width: 1400px; margin: 0 auto; padding: 0 24px;
-  height: 100%; display: flex; align-items: center; gap: 32px;
+  height: 58px; display: flex; align-items: center; gap: 28px;
 }
 
 .nav-brand {
-  display: flex; align-items: center; gap: 10px;
-  color: var(--accent-light); flex-shrink: 0;
+  display: flex; align-items: center; gap: 9px; flex-shrink: 0;
 }
 .brand-icon {
-  width: 34px; height: 34px; background: var(--accent-glow);
-  border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 8px;
-  display: flex; align-items: center; justify-content: center;
+  width: 32px; height: 32px; background: #1e3a8a;
+  border-radius: 8px; display: flex; align-items: center; justify-content: center;
 }
-.brand-name { font-size: 16px; font-weight: 700; letter-spacing: -0.02em; color: var(--text-primary); }
+.brand-name { font-size: 16px; font-weight: 800; color: #111827; letter-spacing: -0.03em; }
 
 .nav-links {
-  display: flex; list-style: none; gap: 4px;
+  display: flex; list-style: none; gap: 0; flex: 1;
+  li { position: relative; }
   a {
-    display: block; padding: 6px 14px; border-radius: 6px;
-    font-size: 14px; font-weight: 500; color: var(--text-secondary);
-    transition: all var(--transition);
-    &:hover { color: var(--text-primary); background: rgba(255,255,255,0.04); }
-    &.active { color: var(--text-primary); background: rgba(255,255,255,0.07); }
+    display: block; padding: 6px 14px; font-size: 14px; font-weight: 500;
+    color: #6b7280; transition: color 150ms ease; position: relative;
+    &::after {
+      content: ''; position: absolute; bottom: -19px; left: 0; right: 0;
+      height: 2px; background: #16a34a; border-radius: 1px 1px 0 0;
+      transform: scaleX(0); transition: transform 150ms ease;
+    }
+    &:hover { color: #111827; }
+    &.active {
+      color: #111827; font-weight: 600;
+      &::after { transform: scaleX(1); }
+    }
   }
 }
 
-.nav-right { margin-left: auto; display: flex; align-items: center; gap: 16px; }
+.nav-right { margin-left: auto; display: flex; align-items: center; gap: 10px; }
 
-.market-status {
+.nav-chip {
   display: flex; align-items: center; gap: 6px;
-  font-size: 12px; font-weight: 500; color: var(--text-muted);
+  padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: 600;
+  background: rgba(22,163,74,0.08); color: #16a34a;
+  border: 1px solid rgba(22,163,74,0.2);
 }
-.market-status.open { color: var(--green); }
-.status-dot {
-  width: 6px; height: 6px; border-radius: 50%;
-  background: currentColor; animation: pulse 2s infinite;
+.chip-dot {
+  width: 7px; height: 7px; border-radius: 50%; background: #9ca3af;
+  &.open { background: #16a34a; animation: pulse 2s infinite; }
 }
 @keyframes pulse {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.4; }
 }
 
-.time {
-  font-size: 12px; font-family: 'JetBrains Mono', monospace;
-  color: var(--text-muted);
+.nav-time { font-size: 12px; color: #6b7280; }
+
+.icon-btn {
+  width: 34px; height: 34px; display: flex; align-items: center; justify-content: center;
+  border-radius: 8px; color: #6b7280; transition: background 150ms ease;
+  &:hover { background: #f3f4f6; color: #111827; }
+}
+
+.user-avatar-btn {
+  width: 34px; height: 34px; border-radius: 50%;
+  background: #16a34a; color: white;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 700; cursor: pointer; user-select: none;
+  flex-shrink: 0;
+}
+
+.mobile-menu-btn {
+  display: none; padding: 6px; margin-left: auto; color: #6b7280;
+  border-radius: 6px;
+  &:hover { background: #f3f4f6; }
+}
+
+.mobile-nav {
+  border-top: 1px solid #e5e7eb; padding: 8px 0;
+  background: #ffffff;
+  a {
+    display: block; padding: 10px 24px; font-size: 14px; font-weight: 500;
+    color: #6b7280;
+    &.active { color: #16a34a; }
+    &:hover { background: #f9fafb; color: #111827; }
+  }
+}
+
+@media (max-width: 768px) {
+  .nav-links { display: none; }
+  .nav-chip { display: none; }
+  .nav-time { display: none; }
+  .icon-btn { display: none; }
+  .mobile-menu-btn { display: flex; }
 }

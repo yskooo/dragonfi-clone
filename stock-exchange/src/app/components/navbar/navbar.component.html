@@ -1,10 +1,11 @@
 <nav class="navbar">
   <div class="nav-inner">
+
     <div class="nav-brand">
       <div class="brand-icon">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M3 17L9 11L13 15L21 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-          <path d="M17 7H21V11" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M3 17L9 11L13 15L21 7" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M17 7H21V11" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
       </div>
       <span class="brand-name">StockEx</span>
@@ -18,11 +19,33 @@
     </ul>
 
     <div class="nav-right">
-      <div class="market-status" [class.open]="marketStatus === 'OPEN'">
-        <span class="status-dot"></span>
-        <span>Market {{ marketStatus }}</span>
+      <div class="nav-chip">
+        <span class="chip-dot" [class.open]="marketOpen"></span>
+        {{ marketOpen ? 'Market Open' : 'Market Closed' }}
       </div>
-      <div class="time">{{ currentTime | date:'HH:mm:ss' }}</div>
+      <div class="nav-time mono">{{ currentTime | date:'HH:mm:ss' }}</div>
+      <button class="icon-btn" title="Search">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none">
+          <circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="2"/>
+          <path d="M21 21L16.65 16.65" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </button>
+      <div class="user-avatar-btn">JD</div>
     </div>
+
+    <button class="mobile-menu-btn" (click)="mobileMenuOpen = !mobileMenuOpen">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+        <path d="M3 12h18M3 6h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+    </button>
   </div>
+
+  @if (mobileMenuOpen) {
+    <div class="mobile-nav">
+      <a routerLink="/dashboard" routerLinkActive="active" (click)="mobileMenuOpen = false">Dashboard</a>
+      <a routerLink="/market" routerLinkActive="active" (click)="mobileMenuOpen = false">Market</a>
+      <a routerLink="/portfolio" routerLinkActive="active" (click)="mobileMenuOpen = false">Portfolio</a>
+      <a routerLink="/orders" routerLinkActive="active" (click)="mobileMenuOpen = false">Orders</a>
+    </div>
+  }
 </nav>

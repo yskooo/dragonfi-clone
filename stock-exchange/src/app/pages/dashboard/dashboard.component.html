@@ -1,135 +1,361 @@
-<div class="container">
-  <div class="page-header">
-    <h1>Market Overview</h1>
-    <p>Real-time market data &mdash; updates every 3 seconds</p>
-  </div>
+<div class="dash-wrapper">
+  <div class="dash-container">
 
-  @if (loading) {
-    <div class="loading">Loading market data...</div>
-  } @else if (summary) {
+    @if (loading) {
+      <div class="loading">Loading market data…</div>
+    } @else {
 
-    <div class="indices-row">
-      @for (idx of summary.indices; track idx.name) {
-        <div class="index-card card">
-          <div class="index-name">{{ idx.name }}</div>
-          <div class="index-value mono">{{ idx.value | number:'1.2-2' }}</div>
-          <div class="badge" [class.up]="idx.change >= 0" [class.down]="idx.change < 0">
-            {{ idx.change >= 0 ? '+' : '' }}{{ idx.change }}%
+    <div class="dash-grid">
+
+      <!-- ═══════════════════════════════ MAIN COLUMN ═══════════════════════════════ -->
+      <div class="main-col">
+
+        <!-- ── TOP ROW: Portfolio Card + Banner/Available ── -->
+        <div class="top-row">
+
+          <!-- Portfolio Card (dark green) -->
+          <div class="portfolio-card">
+            <div class="pc-head">
+              <div class="pc-user">
+                <div class="pc-avatar">JD</div>
+                <div class="pc-user-info">
+                  <div class="pc-name">John Doe</div>
+                  <div class="pc-id">EP-123456-7890</div>
+                </div>
+              </div>
+              <span class="pc-badge">Individual</span>
+            </div>
+
+            <div class="pc-stats">
+              <div class="pc-stat">
+                <div class="pc-stat-label">Total Investment</div>
+                <div class="pc-stat-value">{{ portfolio?.totalInvested | currency:'USD':'symbol':'1.2-2' }}</div>
+              </div>
+              <div class="pc-stat align-end">
+                <div class="pc-stat-label">Unrealized P/L</div>
+                <div class="pc-stat-value"
+                     [class.val-green]="(portfolio?.totalGainLoss ?? 0) >= 0"
+                     [class.val-red]="(portfolio?.totalGainLoss ?? 0) < 0">
+                  {{ (portfolio?.totalGainLoss ?? 0) >= 0 ? '+' : '' }}{{ portfolio?.totalGainLoss | currency:'USD':'symbol':'1.2-2' }}
+                </div>
+                <div class="pc-stat-pct"
+                     [class.pct-green]="(portfolio?.totalGainLossPercent ?? 0) >= 0"
+                     [class.pct-red]="(portfolio?.totalGainLossPercent ?? 0) < 0">
+                  {{ (portfolio?.totalGainLossPercent ?? 0) >= 0 ? '+' : '' }}{{ portfolio?.totalGainLossPercent | number:'1.2-2' }}%
+                </div>
+              </div>
+            </div>
+
+            <div class="pc-actions">
+              <button class="pc-btn" routerLink="/portfolio">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>
+                Deposit
+              </button>
+              <button class="pc-btn">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M12 19V5M5 12l7 7 7-7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                Withdraw
+              </button>
+              <button class="pc-btn">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M7 16l-4-4 4-4M17 8l4 4-4 4M14 4l-4 16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                Transfer
+              </button>
+            </div>
+          </div>
+
+          <!-- Right panel: Banner + Available cards -->
+          <div class="right-panel">
+
+            <div class="banner-card">
+              <div class="banner-text">
+                <h2>Start Your Investing<br>Journey Today</h2>
+                <p>Invest now and start trading!</p>
+              </div>
+              <div class="banner-graphic">
+                <svg viewBox="0 0 90 90" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <ellipse cx="50" cy="76" rx="24" ry="7" fill="rgba(0,0,0,0.25)"/>
+                  <rect x="44" y="36" width="12" height="36" rx="4" fill="#4ade80"/>
+                  <path d="M26 46 L50 12 L74 46 Z" fill="#22c55e"/>
+                  <path d="M50 12 L74 46 L62 46 L50 22 Z" fill="#15803d" opacity="0.6"/>
+                  <rect x="44" y="36" width="6" height="36" rx="3" fill="#86efac" opacity="0.5"/>
+                </svg>
+              </div>
+            </div>
+
+            <div class="available-row">
+              <div class="avail-card">
+                <div class="avail-icon green-icon">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M12 2v20M6 9h12" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>
+                </div>
+                <div>
+                  <div class="avail-label">Available to Trade</div>
+                  <div class="avail-value">{{ portfolio?.cashBalance | currency:'USD':'symbol':'1.2-2' }}</div>
+                </div>
+              </div>
+              <div class="avail-card">
+                <div class="avail-icon blue-icon">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M19 14l-7 7-7-7M12 3v18" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </div>
+                <div>
+                  <div class="avail-label">Available to Withdraw</div>
+                  <div class="avail-value">{{ portfolio?.cashBalance | currency:'USD':'symbol':'1.2-2' }}</div>
+                </div>
+              </div>
+            </div>
+
           </div>
         </div>
-      }
-    </div>
 
-    <div class="breadth-row">
-      <div class="card breadth-card">
-        <div class="breadth-label">Market Breadth</div>
-        <div class="breadth-bar">
-          <div class="bar-up" [style.flex]="summary.advancing"></div>
-          <div class="bar-down" [style.flex]="summary.declining"></div>
+        <!-- ── ALERT BAR (Before the Bell) ── -->
+        <div class="alert-bar">
+          <div class="alert-left">
+            <span class="alert-bell">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+            </span>
+            <span class="alert-label">Before the Bell</span>
+            <span class="alert-dot">·</span>
+            <span class="alert-date">May 12</span>
+            <span class="alert-dot">·</span>
+            <span class="alert-text">AAPL Reports Blowout Q1 Earnings — Beats Wall Street Estimates by 12%</span>
+          </div>
+          <a routerLink="/market" class="alert-arrow">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
         </div>
-        <div class="breadth-stats">
-          <span class="text-green">&#9650; {{ summary.advancing }} Advancing</span>
-          <span class="text-secondary">&#9644; {{ summary.unchanged }} Unchanged</span>
-          <span class="text-red">&#9660; {{ summary.declining }} Declining</span>
-        </div>
-      </div>
-    </div>
 
-    <div class="movers-grid">
-      <div class="card mover-section">
-        <div class="section-header">
-          <h2>Top Gainers</h2>
-          <a routerLink="/market" class="view-all">View all</a>
-        </div>
-        <table>
-          <thead>
-            <tr>
-              <th>Symbol</th>
-              <th>Price</th>
-              <th class="text-right">Change</th>
-            </tr>
-          </thead>
-          <tbody>
-            @for (stock of summary.topGainers; track stock.symbol) {
-              <tr [routerLink]="['/stock', stock.symbol]">
-                <td>
-                  <div class="stock-cell">
-                    <span class="symbol">{{ stock.symbol }}</span>
-                    <span class="name text-secondary">{{ stock.name }}</span>
-                  </div>
-                </td>
-                <td class="mono">{{ stock.price | formatNumber:'price' }}</td>
-                <td class="text-right">
-                  <span class="badge up">+{{ stock.changePercent | number:'1.2-2' }}%</span>
-                </td>
-              </tr>
+        <!-- ── HOLDINGS SECTION ── -->
+        <div class="holdings-card card">
+          <div class="h-tab-bar">
+            <button class="h-tab" [class.active]="activeHoldingsTab === 'stocks'" (click)="activeHoldingsTab = 'stocks'">Stocks</button>
+            <button class="h-tab" [class.active]="activeHoldingsTab === 'funds'" (click)="activeHoldingsTab = 'funds'">Funds</button>
+          </div>
+
+          <div class="positions-wrap">
+            <div class="positions-label">Positions</div>
+
+            @if (portfolio?.holdings?.length) {
+              <div class="h-table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Stock</th>
+                      <th>Qty</th>
+                      <th>Avg Cost</th>
+                      <th>Current</th>
+                      <th class="text-right">Gain / Loss</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @for (h of portfolio!.holdings; track h.symbol) {
+                      <tr [routerLink]="['/stock', h.symbol]">
+                        <td>
+                          <div class="sym-cell">
+                            <div class="sym-dot" [style.background]="getSymbolColor(h.symbol)">{{ getSymbolInitials(h.symbol) }}</div>
+                            <div>
+                              <div class="sym-ticker">{{ h.symbol }}</div>
+                              <div class="sym-name text-secondary">{{ h.name }}</div>
+                            </div>
+                          </div>
+                        </td>
+                        <td class="mono">{{ h.quantity }}</td>
+                        <td class="mono">${{ h.averageCost | number:'1.2-2' }}</td>
+                        <td class="mono">${{ h.currentPrice | number:'1.2-2' }}</td>
+                        <td class="text-right">
+                          <div class="gl-col">
+                            <span class="mono" [class.text-green]="h.gainLoss >= 0" [class.text-red]="h.gainLoss < 0">
+                              {{ h.gainLoss >= 0 ? '+' : '' }}${{ h.gainLoss | number:'1.2-2' }}
+                            </span>
+                            <span class="badge" [class.up]="h.gainLossPercent >= 0" [class.down]="h.gainLossPercent < 0">
+                              {{ h.gainLossPercent >= 0 ? '+' : '' }}{{ h.gainLossPercent | number:'1.2-2' }}%
+                            </span>
+                          </div>
+                        </td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+              </div>
+            } @else {
+              <div class="empty-state">
+                <div class="empty-icon-circle">
+                  <svg width="30" height="30" viewBox="0 0 24 24" fill="none">
+                    <path d="M7 16V4m0 0L3 8m4-4l4 4M17 8v12m0 0l4-4m-4 4l-4-4" stroke="#16a34a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </div>
+                <div class="empty-title">No positions yet</div>
+                <p class="empty-sub">Deposit money to your account and start trading!</p>
+                <a class="btn btn-primary btn-sm" routerLink="/market">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>
+                  Deposit
+                </a>
+              </div>
             }
-          </tbody>
-        </table>
-      </div>
-
-      <div class="card mover-section">
-        <div class="section-header">
-          <h2>Top Losers</h2>
-          <a routerLink="/market" class="view-all">View all</a>
+          </div>
         </div>
-        <table>
-          <thead>
-            <tr>
-              <th>Symbol</th>
-              <th>Price</th>
-              <th class="text-right">Change</th>
-            </tr>
-          </thead>
-          <tbody>
-            @for (stock of summary.topLosers; track stock.symbol) {
-              <tr [routerLink]="['/stock', stock.symbol]">
-                <td>
-                  <div class="stock-cell">
-                    <span class="symbol">{{ stock.symbol }}</span>
-                    <span class="name text-secondary">{{ stock.name }}</span>
-                  </div>
-                </td>
-                <td class="mono">{{ stock.price | formatNumber:'price' }}</td>
-                <td class="text-right">
-                  <span class="badge down">{{ stock.changePercent | number:'1.2-2' }}%</span>
-                </td>
-              </tr>
-            }
-          </tbody>
-        </table>
-      </div>
 
-      <div class="card mover-section">
-        <div class="section-header">
-          <h2>Most Active</h2>
-          <a routerLink="/market" class="view-all">View all</a>
+        <!-- ── NEWS SECTION ── -->
+        <div class="news-card card">
+          <div class="news-head">
+            <h2>News</h2>
+            <div class="all-news-pill">
+              <span class="pill-dot"></span>
+              All News
+            </div>
+          </div>
+
+          @for (item of newsItems; track item.headline) {
+            <div class="news-item">
+              <div class="news-meta">
+                <span class="news-src">{{ item.source }}</span>
+                <span class="news-time text-muted">{{ item.timeAgo }}</span>
+              </div>
+              <div class="news-hl">
+                {{ item.headline }}
+                <svg class="ext-icon" width="11" height="11" viewBox="0 0 24 24" fill="none">
+                  <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                  <polyline points="15 3 21 3 21 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  <line x1="10" y1="14" x2="21" y2="3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+              </div>
+              <div class="news-related">
+                @for (sym of item.relatedSymbols; track sym) {
+                  <a class="rel-chip" [routerLink]="['/stock', sym]">
+                    <div class="rel-dot" [style.background]="getSymbolColor(sym)">{{ getSymbolInitials(sym) }}</div>
+                    <span>{{ sym }}</span>
+                  </a>
+                }
+              </div>
+            </div>
+          }
         </div>
-        <table>
-          <thead>
-            <tr>
-              <th>Symbol</th>
-              <th>Price</th>
-              <th class="text-right">Volume</th>
-            </tr>
-          </thead>
-          <tbody>
-            @for (stock of summary.mostActive; track stock.symbol) {
-              <tr [routerLink]="['/stock', stock.symbol]">
-                <td>
-                  <div class="stock-cell">
-                    <span class="symbol">{{ stock.symbol }}</span>
-                    <span class="name text-secondary">{{ stock.name }}</span>
-                  </div>
-                </td>
-                <td class="mono">{{ stock.price | formatNumber:'price' }}</td>
-                <td class="text-right mono text-secondary">{{ stock.volume | formatNumber:'volume' }}</td>
-              </tr>
-            }
-          </tbody>
-        </table>
+
       </div>
+      <!-- end main-col -->
+
+      <!-- ═══════════════════════════════ SIDEBAR ═══════════════════════════════ -->
+      <div class="sidebar-col">
+
+        <!-- ── PROMO BANNER ── -->
+        <div class="promo-card card">
+          <div class="promo-visual">
+            <div class="promo-bars">
+              <div class="pb pb1"></div>
+              <div class="pb pb2"></div>
+              <div class="pb pb3"></div>
+              <div class="pb pb4"></div>
+              <div class="pb pb5"></div>
+            </div>
+            <div class="promo-line"></div>
+          </div>
+          <div class="promo-body">
+            <h3>Build Wealth with StockEx Premium</h3>
+            <p>Own top U.S. companies and grow your wealth with professional-grade tools and real-time analytics.</p>
+            <button class="promo-btn">Explore Premium</button>
+          </div>
+        </div>
+
+        <!-- ── MARKET MOVERS ── -->
+        <div class="movers-card card">
+          <div class="movers-head">
+            <div>
+              <div class="movers-title">Market Movers</div>
+              <div class="movers-sub">
+                <span class="movers-dot"></span>
+                {{ currentDate | date:'EEE MMM d, y h:mm a' }}
+              </div>
+            </div>
+            <select class="movers-select">
+              <option>All Stocks</option>
+            </select>
+          </div>
+
+          <div class="m-tab-bar">
+            <button class="m-tab" [class.active]="activeMoversTab === 'gainers'" (click)="activeMoversTab = 'gainers'">Top Gainers</button>
+            <button class="m-tab" [class.active]="activeMoversTab === 'losers'" (click)="activeMoversTab = 'losers'">Top Losers</button>
+          </div>
+
+          <div class="movers-list">
+            @for (stock of displayedMovers.slice(0, 5); track stock.symbol) {
+              <div class="mover-row" [routerLink]="['/stock', stock.symbol]">
+                <div class="mover-dot" [style.background]="getSymbolColor(stock.symbol)">{{ getSymbolInitials(stock.symbol) }}</div>
+                <div class="mover-info">
+                  <div class="mover-sym">{{ stock.symbol }}</div>
+                  <div class="mover-name text-muted">{{ stock.name }}</div>
+                </div>
+                <div class="mover-prices">
+                  <div class="mover-price mono">${{ stock.price | number:'1.2-2' }}</div>
+                  <div class="mover-chg"
+                       [class.text-green]="stock.changePercent >= 0"
+                       [class.text-red]="stock.changePercent < 0">
+                    {{ stock.changePercent >= 0 ? '+' : '' }}{{ stock.changePercent | number:'1.2-2' }}%
+                  </div>
+                </div>
+              </div>
+            }
+          </div>
+
+          <a routerLink="/market" class="see-more">SEE MORE</a>
+        </div>
+
+        <!-- ── CALENDAR ── -->
+        <div class="cal-card card">
+          <div class="cal-head">
+            <span class="cal-title">Calendar</span>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" class="text-muted">
+              <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+              <path d="M12 16v-4M12 8h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </div>
+
+          <div class="c-tab-bar">
+            <button class="c-tab" [class.active]="activeCalendarTab === 'dividends'" (click)="activeCalendarTab = 'dividends'">
+              Dividends <span class="c-badge">{{ calendarItems.length }}</span>
+            </button>
+            <button class="c-tab" [class.active]="activeCalendarTab === 'rights'" (click)="activeCalendarTab = 'rights'">Rights</button>
+            <button class="c-tab" [class.active]="activeCalendarTab === 'ipo'" (click)="activeCalendarTab = 'ipo'">IPO</button>
+          </div>
+
+          @if (activeCalendarTab === 'dividends') {
+            @for (item of calendarItems; track item.symbol) {
+              <div class="cal-item">
+                <div class="cal-item-head">
+                  <span class="cal-sym">{{ item.symbol }}</span>
+                  <span class="cal-type">{{ item.type }}</span>
+                </div>
+                <div class="cal-item-body">
+                  <div class="pd-box">
+                    <div class="pd-label">Payment Date</div>
+                    <div class="pd-day">{{ item.paymentDay }}</div>
+                    <div class="pd-month">{{ item.paymentMonth }}</div>
+                  </div>
+                  <div class="cal-details">
+                    <div class="cal-row">
+                      <span class="cal-key">Dividend Rate</span>
+                      <span class="cal-val">{{ item.dividendRate }} per share</span>
+                    </div>
+                    <div class="cal-row">
+                      <span class="cal-key">Ex-Dividend Date</span>
+                      <span class="cal-val">{{ item.exDividendDate }}</span>
+                    </div>
+                    <div class="cal-row">
+                      <span class="cal-key">Record Date</span>
+                      <span class="cal-val">{{ item.recordDate }}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            }
+          } @else {
+            <div class="cal-empty">
+              <p class="text-muted">No upcoming {{ activeCalendarTab }} events.</p>
+            </div>
+          }
+        </div>
+
+      </div>
+      <!-- end sidebar-col -->
+
     </div>
+    }
 
-  }
+  </div>
 </div>
