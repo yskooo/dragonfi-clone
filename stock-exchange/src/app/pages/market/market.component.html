@@ -1,0 +1,75 @@
+<div class="container">
+  <div class="page-header">
+    <h1>Market</h1>
+    <p>{{ filteredStocks.length }} securities &mdash; real-time prices</p>
+  </div>
+
+  <div class="toolbar card">
+    <input class="input search-input" [(ngModel)]="searchQuery" placeholder="Search symbol or name..." />
+    <select class="input" [(ngModel)]="selectedSector">
+      <option value="">All Sectors</option>
+      @for (sector of sectors; track sector.sector) {
+        <option [value]="sector.sector">{{ sector.sector }}</option>
+      }
+    </select>
+    @if (searchQuery || selectedSector) {
+      <button class="btn btn-ghost btn-sm" (click)="clearFilters()">Clear</button>
+    }
+  </div>
+
+  @if (loading) {
+    <div class="loading">Loading market data...</div>
+  } @else {
+    <div class="card table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Symbol</th>
+            <th (click)="sort('price')" class="sortable">Price{{ sortIcon('price') }}</th>
+            <th (click)="sort('change')" class="sortable">Change{{ sortIcon('change') }}</th>
+            <th (click)="sort('changePercent')" class="sortable">Change %{{ sortIcon('changePercent') }}</th>
+            <th (click)="sort('volume')" class="sortable">Volume{{ sortIcon('volume') }}</th>
+            <th (click)="sort('marketCap')" class="sortable">Market Cap{{ sortIcon('marketCap') }}</th>
+            <th (click)="sort('peRatio')" class="sortable">P/E{{ sortIcon('peRatio') }}</th>
+            <th>52W Range</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (stock of filteredStocks; track stock.symbol) {
+            <tr [routerLink]="['/stock', stock.symbol]">
+              <td>
+                <div class="stock-name-cell">
+                  <span class="sym">{{ stock.symbol }}</span>
+                  <span class="nm text-secondary">{{ stock.name }}</span>
+                </div>
+              </td>
+              <td class="mono font-semibold">{{ stock.price | formatNumber:'price' }}</td>
+              <td>
+                <span [class.text-green]="stock.change >= 0" [class.text-red]="stock.change < 0" class="mono">
+                  {{ stock.change >= 0 ? '+' : '' }}{{ stock.change | number:'1.2-2' }}
+                </span>
+              </td>
+              <td>
+                <span class="badge" [class.up]="stock.changePercent >= 0" [class.down]="stock.changePercent < 0">
+                  {{ stock.changePercent >= 0 ? '+' : '' }}{{ stock.changePercent | number:'1.2-2' }}%
+                </span>
+              </td>
+              <td class="mono text-secondary">{{ stock.volume | formatNumber:'volume' }}</td>
+              <td class="mono text-secondary">{{ stock.marketCap | formatNumber:'cap' }}</td>
+              <td class="mono text-secondary">{{ stock.peRatio > 0 ? (stock.peRatio | number:'1.1-1') : '-' }}</td>
+              <td>
+                <div class="range-bar">
+                  <span class="range-low mono text-muted">{{ stock.weekLow52 | formatNumber:'price' }}</span>
+                  <div class="range-track">
+                    <div class="range-fill" [style.width.%]="((stock.price - stock.weekLow52) / (stock.weekHigh52 - stock.weekLow52)) * 100"></div>
+                  </div>
+                  <span class="range-high mono text-muted">{{ stock.weekHigh52 | formatNumber:'price' }}</span>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

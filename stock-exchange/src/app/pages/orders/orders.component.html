@@ -1,0 +1,76 @@
+<div class="container">
+  <div class="page-header">
+    <h1>Order History</h1>
+    <p>All executed trades</p>
+  </div>
+
+  @if (!loading) {
+    <div class="stats-row">
+      <div class="card stat-pill">
+        <span class="text-secondary">Total Orders</span>
+        <span class="mono">{{ orders.length }}</span>
+      </div>
+      <div class="card stat-pill">
+        <span class="text-secondary">Buy Orders</span>
+        <span class="mono text-green">{{ buyCount }}</span>
+      </div>
+      <div class="card stat-pill">
+        <span class="text-secondary">Sell Orders</span>
+        <span class="mono text-red">{{ sellCount }}</span>
+      </div>
+      <div class="card stat-pill">
+        <span class="text-secondary">Total Volume</span>
+        <span class="mono">{{ totalVolume | formatNumber:'currency' }}</span>
+      </div>
+    </div>
+  }
+
+  @if (loading) {
+    <div class="loading">Loading orders...</div>
+  } @else if (orders.length === 0) {
+    <div class="card empty-state">
+      <p>No orders yet.</p>
+      <a routerLink="/market" class="btn btn-primary" style="margin-top:12px;display:inline-flex">Browse Market</a>
+    </div>
+  } @else {
+    <div class="card table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Date &amp; Time</th>
+            <th>Symbol</th>
+            <th>Type</th>
+            <th class="text-right">Quantity</th>
+            <th class="text-right">Price</th>
+            <th class="text-right">Total Value</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (order of orders; track order.id) {
+            <tr [routerLink]="['/stock', order.symbol]">
+              <td class="mono text-secondary">{{ order.executedAt | date:'MMM d, y HH:mm' }}</td>
+              <td>
+                <div class="stock-cell">
+                  <span class="sym">{{ order.symbol }}</span>
+                  <span class="nm text-secondary">{{ order.name }}</span>
+                </div>
+              </td>
+              <td>
+                <span class="type-badge" [class.buy]="order.type === 'BUY'" [class.sell]="order.type === 'SELL'">
+                  {{ order.type }}
+                </span>
+              </td>
+              <td class="text-right mono">{{ order.quantity }}</td>
+              <td class="text-right mono">{{ order.price | formatNumber:'price' }}</td>
+              <td class="text-right mono">{{ order.total | formatNumber:'currency' }}</td>
+              <td>
+                <span class="status-badge filled">{{ order.status }}</span>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

@@ -1,0 +1,130 @@
+<div class="container">
+  @if (loading) {
+    <div class="loading">Loading...</div>
+  } @else if (stock) {
+    <div class="detail-layout">
+      <div class="detail-main">
+        <div class="stock-header">
+          <div class="stock-id">
+            <div class="symbol">{{ stock.symbol }}</div>
+            <div class="name text-secondary">{{ stock.name }}</div>
+            <div class="sector-tag">{{ stock.sector }}</div>
+          </div>
+          <div class="price-block">
+            <div class="price mono" [class.text-green]="isPositive" [class.text-red]="!isPositive">
+              {{ stock.price | formatNumber:'price' }}
+            </div>
+            <div class="price-change">
+              <span class="badge" [class.up]="isPositive" [class.down]="!isPositive">
+                {{ isPositive ? '+' : '' }}{{ stock.change | number:'1.2-2' }}
+                ({{ isPositive ? '+' : '' }}{{ stock.changePercent | number:'1.2-2' }}%)
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card chart-card">
+          <div class="chart-toolbar">
+            @for (p of periods; track p) {
+              <button class="period-btn" [class.active]="selectedPeriod === p" (click)="setPeriod(p)">{{ p }}</button>
+            }
+          </div>
+          <div class="chart-area">
+            @if (candles.length) {
+              <svg viewBox="0 0 800 220" preserveAspectRatio="none" class="chart-svg">
+                <defs>
+                  <linearGradient id="chartGrad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" [attr.stop-color]="isPositive ? '#10b981' : '#ef4444'" stop-opacity="0.2"/>
+                    <stop offset="100%" [attr.stop-color]="isPositive ? '#10b981' : '#ef4444'" stop-opacity="0"/>
+                  </linearGradient>
+                </defs>
+                <path [attr.d]="chartFill" fill="url(#chartGrad)"/>
+                <path [attr.d]="chartPath" fill="none"
+                  [attr.stroke]="isPositive ? '#10b981' : '#ef4444'"
+                  stroke-width="1.5" stroke-linejoin="round"/>
+              </svg>
+            } @else {
+              <div class="loading">No chart data</div>
+            }
+          </div>
+        </div>
+
+        <div class="stats-grid">
+          <div class="card stat-card">
+            <div class="stat-label">Open</div>
+            <div class="stat-val mono">{{ stock.open | formatNumber:'price' }}</div>
+          </div>
+          <div class="card stat-card">
+            <div class="stat-label">Previous Close</div>
+            <div class="stat-val mono">{{ stock.previousClose | formatNumber:'price' }}</div>
+          </div>
+          <div class="card stat-card">
+            <div class="stat-label">Day High</div>
+            <div class="stat-val mono text-green">{{ stock.high | formatNumber:'price' }}</div>
+          </div>
+          <div class="card stat-card">
+            <div class="stat-label">Day Low</div>
+            <div class="stat-val mono text-red">{{ stock.low | formatNumber:'price' }}</div>
+          </div>
+          <div class="card stat-card">
+            <div class="stat-label">52W High</div>
+            <div class="stat-val mono">{{ stock.weekHigh52 | formatNumber:'price' }}</div>
+          </div>
+          <div class="card stat-card">
+            <div class="stat-label">52W Low</div>
+            <div class="stat-val mono">{{ stock.weekLow52 | formatNumber:'price' }}</div>
+          </div>
+          <div class="card stat-card">
+            <div class="stat-label">Volume</div>
+            <div class="stat-val mono">{{ stock.volume | formatNumber:'volume' }}</div>
+          </div>
+          <div class="card stat-card">
+            <div class="stat-label">Market Cap</div>
+            <div class="stat-val mono">{{ stock.marketCap | formatNumber:'cap' }}</div>
+          </div>
+          <div class="card stat-card">
+            <div class="stat-label">P/E Ratio</div>
+            <div class="stat-val mono">{{ stock.peRatio > 0 ? (stock.peRatio | number:'1.1-1') : 'N/A' }}</div>
+          </div>
+          <div class="card stat-card">
+            <div class="stat-label">Dividend Yield</div>
+            <div class="stat-val mono">{{ stock.dividendYield > 0 ? (stock.dividendYield | number:'1.2-2') + '%' : 'N/A' }}</div>
+          </div>
+        </div>
+      </div>
+
+      <aside class="trade-panel card">
+        <h3>Place Order</h3>
+        <div class="trade-type-tabs">
+          <button class="tab-btn" [class.buy-active]="tradeType === 'BUY'" (click)="tradeType = 'BUY'">Buy</button>
+          <button class="tab-btn" [class.sell-active]="tradeType === 'SELL'" (click)="tradeType = 'SELL'">Sell</button>
+        </div>
+        <div class="form-group">
+          <label>Quantity</label>
+          <input class="input w-full" type="number" [(ngModel)]="tradeQty" min="1" step="1"/>
+        </div>
+        <div class="form-group">
+          <label>Price (Market)</label>
+          <div class="price-display mono">{{ stock.price | formatNumber:'price' }}</div>
+        </div>
+        <div class="trade-summary">
+          <div class="summary-row">
+            <span class="text-secondary">Estimated Total</span>
+            <span class="mono">{{ totalCost | formatNumber:'currency' }}</span>
+          </div>
+        </div>
+        <button class="btn w-full" [class.btn-buy]="tradeType === 'BUY'" [class.btn-sell]="tradeType === 'SELL'"
+          (click)="executeTrade()" [disabled]="trading || tradeQty < 1">
+          {{ trading ? 'Processing...' : tradeType + ' ' + stock.symbol }}
+        </button>
+        @if (tradeMessage) {
+          <div class="trade-msg" [class.success]="tradeSuccess" [class.error]="!tradeSuccess">
+            {{ tradeMessage }}
+          </div>
+        }
+      </aside>
+    </div>
+  } @else {
+    <div class="loading">Stock not found.</div>
+  }
+</div>

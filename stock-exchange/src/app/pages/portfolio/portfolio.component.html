@@ -1,0 +1,111 @@
+<div class="container">
+  <div class="page-header">
+    <h1>Portfolio</h1>
+    <p>Your holdings and performance</p>
+  </div>
+
+  @if (loading) {
+    <div class="loading">Loading portfolio...</div>
+  } @else if (portfolio) {
+
+    <div class="summary-row">
+      <div class="card summary-card">
+        <div class="s-label">Total Value</div>
+        <div class="s-val mono">{{ portfolio.totalValue | formatNumber:'currency' }}</div>
+      </div>
+      <div class="card summary-card">
+        <div class="s-label">Cash Balance</div>
+        <div class="s-val mono">{{ portfolio.cashBalance | formatNumber:'currency' }}</div>
+      </div>
+      <div class="card summary-card">
+        <div class="s-label">Invested</div>
+        <div class="s-val mono">{{ portfolio.totalInvested | formatNumber:'currency' }}</div>
+      </div>
+      <div class="card summary-card">
+        <div class="s-label">Total P&amp;L</div>
+        <div class="s-val mono" [class.text-green]="portfolio.totalGainLoss >= 0" [class.text-red]="portfolio.totalGainLoss < 0">
+          {{ portfolio.totalGainLoss >= 0 ? '+' : '' }}{{ portfolio.totalGainLoss | formatNumber:'currency' }}
+        </div>
+        <div class="s-sub badge" [class.up]="portfolio.totalGainLossPercent >= 0" [class.down]="portfolio.totalGainLossPercent < 0">
+          {{ portfolio.totalGainLossPercent >= 0 ? '+' : '' }}{{ portfolio.totalGainLossPercent | number:'1.2-2' }}%
+        </div>
+      </div>
+    </div>
+
+    <div class="portfolio-layout">
+      <div class="card holdings-table">
+        <div class="section-header">
+          <h2>Holdings</h2>
+          <span class="text-secondary" style="font-size:12px">{{ portfolio.holdings.length }} positions</span>
+        </div>
+        @if (portfolio.holdings.length === 0) {
+          <div class="loading">No holdings yet. <a routerLink="/market">Browse market</a></div>
+        } @else {
+          <table>
+            <thead>
+              <tr>
+                <th>Symbol</th>
+                <th class="text-right">Shares</th>
+                <th class="text-right">Avg Cost</th>
+                <th class="text-right">Current Price</th>
+                <th class="text-right">Market Value</th>
+                <th class="text-right">P&amp;L</th>
+                <th class="text-right">Return</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (h of portfolio.holdings; track h.symbol) {
+                <tr [routerLink]="['/stock', h.symbol]">
+                  <td>
+                    <div class="stock-cell">
+                      <span class="sym">{{ h.symbol }}</span>
+                      <span class="nm text-secondary">{{ h.name }}</span>
+                    </div>
+                  </td>
+                  <td class="text-right mono">{{ h.quantity }}</td>
+                  <td class="text-right mono text-secondary">{{ h.averageCost | formatNumber:'price' }}</td>
+                  <td class="text-right mono">{{ h.currentPrice | formatNumber:'price' }}</td>
+                  <td class="text-right mono">{{ h.currentValue | formatNumber:'currency' }}</td>
+                  <td class="text-right mono" [class.text-green]="h.gainLoss >= 0" [class.text-red]="h.gainLoss < 0">
+                    {{ h.gainLoss >= 0 ? '+' : '' }}{{ h.gainLoss | formatNumber:'currency' }}
+                  </td>
+                  <td class="text-right">
+                    <span class="badge" [class.up]="h.gainLossPercent >= 0" [class.down]="h.gainLossPercent < 0">
+                      {{ h.gainLossPercent >= 0 ? '+' : '' }}{{ h.gainLossPercent | number:'1.2-2' }}%
+                    </span>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        }
+      </div>
+
+      <div class="card allocation-card">
+        <div class="section-header"><h2>Allocation</h2></div>
+        <div class="alloc-list">
+          @for (item of allocationData; track item.symbol) {
+            <div class="alloc-item">
+              <div class="alloc-header">
+                <span class="alloc-sym">{{ item.symbol }}</span>
+                <span class="alloc-pct mono">{{ item.pct | number:'1.1-1' }}%</span>
+              </div>
+              <div class="alloc-track">
+                <div class="alloc-fill" [style.width.%]="item.pct"></div>
+              </div>
+            </div>
+          }
+          <div class="alloc-item">
+            <div class="alloc-header">
+              <span class="alloc-sym text-secondary">Cash</span>
+              <span class="alloc-pct mono text-secondary">{{ cashPct | number:'1.1-1' }}%</span>
+            </div>
+            <div class="alloc-track">
+              <div class="alloc-fill cash" [style.width.%]="cashPct"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+</div>

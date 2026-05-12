@@ -1,0 +1,135 @@
+<div class="container">
+  <div class="page-header">
+    <h1>Market Overview</h1>
+    <p>Real-time market data &mdash; updates every 3 seconds</p>
+  </div>
+
+  @if (loading) {
+    <div class="loading">Loading market data...</div>
+  } @else if (summary) {
+
+    <div class="indices-row">
+      @for (idx of summary.indices; track idx.name) {
+        <div class="index-card card">
+          <div class="index-name">{{ idx.name }}</div>
+          <div class="index-value mono">{{ idx.value | number:'1.2-2' }}</div>
+          <div class="badge" [class.up]="idx.change >= 0" [class.down]="idx.change < 0">
+            {{ idx.change >= 0 ? '+' : '' }}{{ idx.change }}%
+          </div>
+        </div>
+      }
+    </div>
+
+    <div class="breadth-row">
+      <div class="card breadth-card">
+        <div class="breadth-label">Market Breadth</div>
+        <div class="breadth-bar">
+          <div class="bar-up" [style.flex]="summary.advancing"></div>
+          <div class="bar-down" [style.flex]="summary.declining"></div>
+        </div>
+        <div class="breadth-stats">
+          <span class="text-green">&#9650; {{ summary.advancing }} Advancing</span>
+          <span class="text-secondary">&#9644; {{ summary.unchanged }} Unchanged</span>
+          <span class="text-red">&#9660; {{ summary.declining }} Declining</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="movers-grid">
+      <div class="card mover-section">
+        <div class="section-header">
+          <h2>Top Gainers</h2>
+          <a routerLink="/market" class="view-all">View all</a>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>Symbol</th>
+              <th>Price</th>
+              <th class="text-right">Change</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (stock of summary.topGainers; track stock.symbol) {
+              <tr [routerLink]="['/stock', stock.symbol]">
+                <td>
+                  <div class="stock-cell">
+                    <span class="symbol">{{ stock.symbol }}</span>
+                    <span class="name text-secondary">{{ stock.name }}</span>
+                  </div>
+                </td>
+                <td class="mono">{{ stock.price | formatNumber:'price' }}</td>
+                <td class="text-right">
+                  <span class="badge up">+{{ stock.changePercent | number:'1.2-2' }}%</span>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card mover-section">
+        <div class="section-header">
+          <h2>Top Losers</h2>
+          <a routerLink="/market" class="view-all">View all</a>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>Symbol</th>
+              <th>Price</th>
+              <th class="text-right">Change</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (stock of summary.topLosers; track stock.symbol) {
+              <tr [routerLink]="['/stock', stock.symbol]">
+                <td>
+                  <div class="stock-cell">
+                    <span class="symbol">{{ stock.symbol }}</span>
+                    <span class="name text-secondary">{{ stock.name }}</span>
+                  </div>
+                </td>
+                <td class="mono">{{ stock.price | formatNumber:'price' }}</td>
+                <td class="text-right">
+                  <span class="badge down">{{ stock.changePercent | number:'1.2-2' }}%</span>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card mover-section">
+        <div class="section-header">
+          <h2>Most Active</h2>
+          <a routerLink="/market" class="view-all">View all</a>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>Symbol</th>
+              <th>Price</th>
+              <th class="text-right">Volume</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (stock of summary.mostActive; track stock.symbol) {
+              <tr [routerLink]="['/stock', stock.symbol]">
+                <td>
+                  <div class="stock-cell">
+                    <span class="symbol">{{ stock.symbol }}</span>
+                    <span class="name text-secondary">{{ stock.name }}</span>
+                  </div>
+                </td>
+                <td class="mono">{{ stock.price | formatNumber:'price' }}</td>
+                <td class="text-right mono text-secondary">{{ stock.volume | formatNumber:'volume' }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  }
+</div>
