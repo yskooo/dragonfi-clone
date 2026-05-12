@@ -1,0 +1,13 @@
+kind = "web"
+previewPath = "/"
+title = "StockEx"
+version = "1.0.0"
+id = "stock-exchange-app"
+
+[[services]]
+localPort = 4200
+name = "StockEx Frontend"
+paths = ["/"]
+
+[services.development]
+run = "cd stock-exchange && NG_CLI_ANALYTICS=false npm start"
